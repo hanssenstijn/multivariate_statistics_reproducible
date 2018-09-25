@@ -1,6 +1,47 @@
-# multivariate_statistics_reproducible
+# Systems Biology Scientific Programming
 
 ---
 Title: Assignment 2: Multivariate_statistics_reproducible
 ---
+
+```{r load librareis}
+library(pls)
+```
+
+
+```{r data}
+
+```
+
+
+```{r split data train and test}
+
+```
+
+
+```{r pls model cross-validation and leave-one-out}
+
+summary(....)
+```
+
+
+```{r plot RMSEP}
+
+```
+
+
+```{r plot ncomp}
+
+```
+
+
+```{r loading plots}
+
+```
+
+
+```{r predict on test set}
+
+```
+
 
