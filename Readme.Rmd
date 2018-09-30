@@ -1,5 +1,5 @@
 ## Making multivariate statistics reproducible
 
-Script.rmd represent the R notebook. Data is collected from PubChem Assay: AID 624202 (AID_624202_datatable.csv). The data is a AHTS assay to identify small molecule activators of BRCA1 expression. From this dataset a descriptor matrix is computed reference (https://github.com/egonw/scientificProgramming/blob/master/assignment%202/descriptors.Rmd). 
+Script.rmd represent the R notebook. Data is collected from PubChem Assay: AID 624202 (AID_624202_datatable.csv). The data is a AHTS assay to identify small molecule activators of BRCA1 expression. From this dataset a descriptor matrix is computed (descriptors.csv) (reference: https://github.com/egonw/scientificProgramming/blob/master/assignment%202/descriptors.Rmd. 
 
 
