@@ -7,17 +7,26 @@ date: "Oktober 2018"
 output: html_document
 ---
 
+```{r clear working space}
 
+```
 
-```{r load librareis}
+```{r load libraries}
 library(pls)
 ```
 
 
-```{r data}
+```{r import datasets}
 
 ```
 
+```{r combine relevant information}
+
+```
+
+```{r data cleaning remove NA and 0 collumns}
+
+```
 
 ```{r split data train and test}
 
