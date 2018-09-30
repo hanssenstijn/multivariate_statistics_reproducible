@@ -1,0 +1,52 @@
+# Systems Biology Scientific Programming
+
+---
+title: "Assignment 2: Multivariate statistics reproducible"
+author: "Stijn Hanssen"
+date: "Oktober 2018"
+output: html_document
+---
+
+
+
+```{r load librareis}
+library(pls)
+```
+
+
+```{r data}
+
+```
+
+
+```{r split data train and test}
+
+```
+
+
+```{r pls model cross-validation and leave-one-out}
+
+summary(....)
+```
+
+
+```{r plot RMSEP}
+
+```
+
+
+```{r plot ncomp}
+
+```
+
+
+```{r loading plots}
+
+```
+
+
+```{r predict on test set}
+
+```
+
+

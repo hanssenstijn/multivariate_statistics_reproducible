@@ -1,47 +1,5 @@
-# Systems Biology Scientific Programming
+## Making multivariate statistics reproducible
 
----
-Title: Assignment 2: Multivariate_statistics_reproducible
----
-
-```{r load librareis}
-library(pls)
-```
-
-
-```{r data}
-
-```
-
-
-```{r split data train and test}
-
-```
-
-
-```{r pls model cross-validation and leave-one-out}
-
-summary(....)
-```
-
-
-```{r plot RMSEP}
-
-```
-
-
-```{r plot ncomp}
-
-```
-
-
-```{r loading plots}
-
-```
-
-
-```{r predict on test set}
-
-```
+Script.rmd represent the R notebook. Data is collected from PubChem Assay: AID 624202 (AID_624202_datatable.csv). The data is a AHTS assay to identify small molecule activators of BRCA1 expression. From this dataset a descriptor matrix is computed reference (https://github.com/egonw/scientificProgramming/blob/master/assignment%202/descriptors.Rmd). 
 
 
