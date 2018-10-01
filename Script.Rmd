@@ -59,7 +59,12 @@ head(data,n=5)
 ```
 ### Data cleaning (remove NA and 0 collumns)
 ```{r}
+data = data[, colSums(is.na(data)) != nrow(data)]
+dim(data)
 
+data = Filter(var,data)
+dim(data)
+head(data,n=5)
 ```
 
 ### Split into train and test data
