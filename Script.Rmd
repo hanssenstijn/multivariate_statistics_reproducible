@@ -7,33 +7,68 @@ date: "Oktober 2018"
 output: html_document
 ---
 
-```{r clear working space}
-
+### Clear working space
+```{r}
+rm(list=ls())
 ```
 
-```{r load libraries}
+### Set path working directory
+```{r}
+setwd("C:/Users/stijn/Desktop/Master systems biology/Systems biology year 2/scientific computing/statistic")
+```
+
+### Load libraries
+```{r}
 library(pls)
 ```
 
-
-```{r import datasets}
-
-```
-
-```{r combine relevant information}
-
-```
-
-```{r data cleaning remove NA and 0 collumns}
-
-```
-
-```{r split data train and test}
+### Import assay data
+```{r}
+assayData = read.csv(
+  file='AID_624202_datatable.csv',
+  header=FALSE, skip=6
+)
+dim(assayData)
+head(assayData,n=5)
+qsarData = assayData[,c("V2","V5")]
+colnames(qsarData) = c("SID","Score")
+dim(qsarData)
+head(qsarData,n=5)
 
 ```
 
+### Import descriptors file
+```{r}
+discriptorData = read.csv(
+  file='descriptors.csv',
+  header=TRUE,row.names = 2
+)
+dim(discriptorData)
+head(discriptorData,n=5)
+```
 
-```{r pls model cross-validation and leave-one-out}
+### Match SID
+```{r}
+data = qsarData[match(rownames(discriptorData),qsarData$SID),]
+data = cbind(discriptorData,data$Score)
+dim(data)
+head(data,n=5)
+#data <- merge(qsarData,discriptorData,by.x = "SID",by.y = 0)
+#dim(data)
+#data[,]
+```
+### Data cleaning (remove NA and 0 collumns)
+```{r}
+
+```
+
+### Split into train and test data
+```{r}
+
+```
+
+### pls model cross-validation and leave-one-out
+```{r}
 
 summary(....)
 ```
