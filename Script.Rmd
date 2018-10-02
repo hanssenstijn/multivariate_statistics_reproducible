@@ -8,53 +8,59 @@ output: html_document
 ---
 
 ### Clear working space
+First step is to make sure that the working space is empty
 ```{r}
-rm(list=ls())
+rm(list=ls()) # clear all variables
 ```
 
 ### Set path working directory
+The directory path is set to place of the datasets
 ```{r}
-setwd("C:/Users/stijn/Desktop/Master systems biology/Systems biology year 2/scientific computing/statistic")
+setwd("C:/Users/stijn/Desktop/Master systems biology/Systems biology year 2/scientific computing/statistic") # set working directory
 ```
 
 ### Load libraries
+Loading the required packages for specific functions
 ```{r}
-library(pls)
+library(pls) # load library
 library(caTools)
 ```
 
 ### Import assay data
+The first dataset that is imported is the assay data from PubMech. The first 6 lines will be skipped for the reason that they don't contain relevant information. Only the SID and Score collumns will be selected from this dataset
 ```{r}
 assayData = read.csv(
   file='AID_624202_datatable.csv',
   header=FALSE, skip=6
-)
+) # Read CSV file, skip first 6 lines
 dim(assayData)
 head(assayData,n=5)
-qsarData = assayData[,c("V2","V5")]
-colnames(qsarData) = c("SID","Score")
+qsarData = assayData[,c("V2","V5")] # keep the SID and Score column
+colnames(qsarData) = c("SID","Score") # change the column names
 dim(qsarData)
 head(qsarData,n=5)
 
 ```
 
 ### Import descriptors file
+The development of the discriptor file can be found he: "https://github.com/egonw/scientificProgramming/blob/master/assignment%202/descriptors.Rmd". 
 ```{r}
 discriptorData = read.csv(
   file='descriptors.csv',
   header=TRUE,row.names = 2
-)
+) # read the CSV
 dim(discriptorData)
 head(discriptorData,n=5)
-discriptorData = discriptorData[,-1]
+discriptorData = discriptorData[,-1] # Delete the numbers column
 dim(discriptorData)
 head(discriptorData,n=5)
 ```
 
 ### Match SID
+The SID column from both data sets will be match, in order to add the score column to the discriptorData. In the variable data is the complete dataset stored
 ```{r}
-data = qsarData[match(rownames(discriptorData),qsarData$SID),]
-data = cbind(discriptorData,data$Score)
+data = qsarData[match(rownames(discriptorData),qsarData$SID),] # Match bij SID
+data = cbind(discriptorData,data$Score) # add the score coulm to the discriptordata
 dim(data)
 head(data,n=5)
 #data <- merge(qsarData,discriptorData,by.x = "SID",by.y = 0)
@@ -62,12 +68,13 @@ head(data,n=5)
 #data[,]
 ```
 ### Data cleaning (remove NA and 0 collumns)
+After data inspection, it is shown that there are columns with only NA values and no variance in the column. These column wont have any added value to the prediction model and thus will be removed
 ```{r}
-data = data[, colSums(is.na(data)) != nrow(data)]
+data = data[, colSums(is.na(data)) != nrow(data)] # check for columns with NA and remove them
 dim(data)
 head(data,n=5)
 
-data = Filter(var,data)
+data = Filter(var,data) # filter the column with no variance out
 dim(data)
 head(data,n=5)
 ```
