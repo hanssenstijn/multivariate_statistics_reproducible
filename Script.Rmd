@@ -20,6 +20,7 @@ setwd("C:/Users/stijn/Desktop/Master systems biology/Systems biology year 2/scie
 ### Load libraries
 ```{r}
 library(pls)
+library(caTools)
 ```
 
 ### Import assay data
@@ -45,6 +46,9 @@ discriptorData = read.csv(
 )
 dim(discriptorData)
 head(discriptorData,n=5)
+discriptorData = discriptorData[,-1]
+dim(discriptorData)
+head(discriptorData,n=5)
 ```
 
 ### Match SID
@@ -61,6 +65,7 @@ head(data,n=5)
 ```{r}
 data = data[, colSums(is.na(data)) != nrow(data)]
 dim(data)
+head(data,n=5)
 
 data = Filter(var,data)
 dim(data)
@@ -69,18 +74,23 @@ head(data,n=5)
 
 ### Split into train and test data
 ```{r}
-
+set.seed(101) 
+sample = sample.split(data, SplitRatio = .75)
+train = subset(data, sample == TRUE)
+train_y = train$`data$Score`
+test  = subset(data, sample == FALSE)
+test_y = test$`data$Score`
 ```
 
-### pls model cross-validation and leave-one-out
+### pls model 
 ```{r}
-
-summary(....)
+pls_model <- plsr(`data$Score` ~ ., data = train, validation = "LOO")
+summary(pls_model)
 ```
 
 
 ```{r plot RMSEP}
-
+plot(RMSEP(pls_model), legendpos="topright")
 ```
 
 
