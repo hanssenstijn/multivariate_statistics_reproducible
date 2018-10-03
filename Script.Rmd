@@ -8,42 +8,43 @@ output: html_document
 ---
 
 ### Clear working space
-First step is to make sure that the working space is empty
+First step is to make sure that the working space is empty.
 ```{r}
 rm(list=ls()) # clear all variables
 ```
 
 ### Set path working directory
-The directory path is set to place of the datasets
+The directory path is set to the stored datasets.
 ```{r}
 setwd("C:/Users/stijn/Desktop/Master systems biology/Systems biology year 2/scientific computing/statistic") # set working directory
 ```
 
 ### Load libraries
-Loading the required packages for specific functions
+Loading the required packages for specific functions.
 ```{r}
 library(pls) # load library
 library(caTools)
 ```
 
 ### Import assay data
-The first dataset that is imported is the assay data from PubMech. The first 6 lines will be skipped for the reason that they don't contain relevant information. Only the SID and Score collumns will be selected from this dataset
+The first dataset that is imported is the assay data from PubMech (AID_624202). The first 6 lines will be skipped for the reason that they don't contain relevant information. Only the SID and Score collumns will be selected from this dataset.
 ```{r}
 assayData = read.csv(
   file='AID_624202_datatable.csv',
   header=FALSE, skip=6
 ) # Read CSV file, skip first 6 lines
+dim(assayData) # check the rows and collumns
+head(assayData,n=5) # inspect the first 5 lines
+assayData = assayData[,c("V2","V5")] # keep the SID and Score column
+colnames(assayData) = c("SID","Score") # change the column names
 dim(assayData)
 head(assayData,n=5)
-qsarData = assayData[,c("V2","V5")] # keep the SID and Score column
-colnames(qsarData) = c("SID","Score") # change the column names
-dim(qsarData)
-head(qsarData,n=5)
 
 ```
 
 ### Import descriptors file
-The development of the discriptor file can be found he: "https://github.com/egonw/scientificProgramming/blob/master/assignment%202/descriptors.Rmd". 
+For the development of the discriptor file go to: [descriptors.Rmd](https://github.com/egonw/scientificProgramming/blob/master/assignment%202/descriptors.Rmd).
+The `descriptors.Rmd` uses the downloaded assay data from PubMech (AID_624202).
 ```{r}
 discriptorData = read.csv(
   file='descriptors.csv',
@@ -51,7 +52,7 @@ discriptorData = read.csv(
 ) # read the CSV
 dim(discriptorData)
 head(discriptorData,n=5)
-discriptorData = discriptorData[,-1] # Delete the numbers column
+discriptorData = discriptorData[,-1] # Delete "X" column, which only contains numbers
 dim(discriptorData)
 head(discriptorData,n=5)
 ```
@@ -59,50 +60,55 @@ head(discriptorData,n=5)
 ### Match SID
 The SID column from both data sets will be match, in order to add the score column to the discriptorData. In the variable data is the complete dataset stored
 ```{r}
-data = qsarData[match(rownames(discriptorData),qsarData$SID),] # Match bij SID
-data = cbind(discriptorData,data$Score) # add the score coulm to the discriptordata
+data = assayData[match(rownames(discriptorData),assayData$SID),] # Match by SID
+data = cbind(discriptorData,data$Score) # add the score column to the discriptordata
 dim(data)
 head(data,n=5)
-#data <- merge(qsarData,discriptorData,by.x = "SID",by.y = 0)
-#dim(data)
-#data[,]
 ```
 ### Data cleaning (remove NA and 0 collumns)
-After data inspection, it is shown that there are columns with only NA values and no variance in the column. These column wont have any added value to the prediction model and thus will be removed
+During data inspection, it came to the attation that there are columns with only NA values and columns with no variance. These column wont have any added value to the prediction model and thus will be removed.
 ```{r}
 data = data[, colSums(is.na(data)) != nrow(data)] # check for columns with NA and remove them
 dim(data)
 head(data,n=5)
 
-data = Filter(var,data) # filter the column with no variance out
+data = Filter(var,data) # filter out the columns with no variance
 dim(data)
 head(data,n=5)
 ```
 
 ### Split into train and test data
+The `caTools` library is used to randomly generate train and test data. 75 percent of the data will be used as training data while the other 25 precent will be used as test data.
 ```{r}
-set.seed(101) 
-sample = sample.split(data, SplitRatio = .75)
-train = subset(data, sample == TRUE)
-train_y = train$`data$Score`
-test  = subset(data, sample == FALSE)
+set.seed(101) # set the seed for the reason that always the same sequence will be generated
+sample = sample.split(data, SplitRatio = .75) # random sample of 75 percent
+train = subset(data, sample == TRUE) # subset the 75 percent data
+train =
+train_y = train$`data$Score` # store the score in a variable
+test  = subset(data, sample == FALSE) # subset the 25 percent data
 test_y = test$`data$Score`
 ```
 
-### pls model 
+### Partial Least Squares (pls) model 
+The `pls` library is used for the development of the prediction model. pls is being used for the reason that there are relativily many predictor variables and relativly a few samples.
 ```{r}
-pls_model <- plsr(`data$Score` ~ ., data = train, validation = "LOO")
-summary(pls_model)
+pls_model <- plsr(`data$Score` ~ .,ncomp = 10, data = train) # fitting the PLS model. score agianst all other variables. the model is fit with 10 components
+summary(pls_model) # overview of the fit and validation results
+pls_model_LOO <- plsr(`data$Score` ~ .,ncomp = 10, data = train,validation = "LOO") # added cross validation (Leave-One-Out)
+summary(pls_model_LOO)
 ```
 
+### plot Root Mean Squared Error of Prediction (RMSEP)
+RMSE measures how spread out the residuals are. The summary above showed two cross validation estimates, the ordinary CV and the adjCV which is a bias-correctd CV estimate. three components seem to be enough 
 
-```{r plot RMSEP}
-plot(RMSEP(pls_model), legendpos="topright")
+```{r}
+plot(RMSEP(pls_model_LOO), legendpos="topright") # plots the estimated RMSEP as a function of the number of components. legendpos indicated the legend position
 ```
 
+### plot 3 components
 
-```{r plot ncomp}
-
+```{r}
+plot(pls_model_LOO, ncomp = 4, asp = 1, line = TRUE)
 ```
 
 
