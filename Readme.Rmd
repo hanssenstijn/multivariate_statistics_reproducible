@@ -1,5 +1,12 @@
 ## Making multivariate statistics reproducible
 
-Script.rmd represent the R notebook. Data is collected from PubChem Assay: AID 624202 (AID_624202_datatable.csv). The data is a AHTS assay to identify small molecule activators of BRCA1 expression. From this dataset a descriptor matrix is computed (descriptors.csv) (reference: https://github.com/egonw/scientificProgramming/blob/master/assignment%202/descriptors.Rmd. 
+`Script.rmd` represents the R notebook. The notebook describes the use of partial least squares on a BRCA1 expression dataset in order to determine the activity of BRCA1 expression.
+
+One of the two datasets that has been used is a AHTS assay to identify small molecule activators of BRCA1 expression. It can be downloaded from PubChem Assay: [AID624202](https://pubchem.ncbi.nlm.nih.gov/bioassay/624202). The second dataset, which will be the descriptors dataset, can be generated from the AID 624202 dataset using [descriptors.Rmd](https://github.com/egonw/scientificProgramming/blob/master/assignment%202/descriptors.Rmd). 
+
+After downloading `AID624202.csv` and creating `descriptors.csv`, the datasets will be combined in the notebook. The next step which took place is data cleaning. Hereafter the data will be split into training and test data(72/25). By use of the training data the PLS model is trained. Next, the model will be tested on the test data. Lastly, plots will be produced.
+
+
+
 
 
