@@ -43,6 +43,7 @@ head(assayData,n=5)
 ```
 
 ### Import descriptors file
+In this section will the descriptors file be loaded.
 For the development of the discriptor file go to: [descriptors.Rmd](https://github.com/egonw/scientificProgramming/blob/master/assignment%202/descriptors.Rmd).
 The `descriptors.Rmd` uses the downloaded assay data from PubMech (AID_624202).
 ```{r}
@@ -78,14 +79,13 @@ head(data,n=5)
 ```
 
 ### Split into train and test data
-The `caTools` library is used to randomly generate train and test data. 75 percent of the data will be used as training data while the other 25 precent will be used as test data.
+The `caTools` library is used to randomly generate train and test data. 80 percent of the data will be used as training data while the other 20 precent will be used as test data.
 ```{r}
 set.seed(101) # set the seed for the reason that always the same sequence will be generated
-sample = sample.split(data, SplitRatio = .75) # random sample of 75 percent
-train = subset(data, sample == TRUE) # subset the 75 percent data
-train =
+sample = sample.split(data, SplitRatio = .80) # random sample of 80 percent
+train = subset(data, sample == TRUE) # subset the 80 percent data
 train_y = train$`data$Score` # store the score in a variable
-test  = subset(data, sample == FALSE) # subset the 25 percent data
+test  = subset(data, sample == FALSE) # subset the 20 percent data
 test_y = test$`data$Score`
 ```
 
@@ -108,17 +108,20 @@ plot(RMSEP(pls_model_LOO), legendpos="topright") # plots the estimated RMSEP as 
 ### plot 3 components
 
 ```{r}
-plot(pls_model_LOO, ncomp = 4, asp = 1, line = TRUE)
+plot(pls_model_LOO, ncomp = 3, asp = 1, line = TRUE)
 ```
 
-
-```{r loading plots}
-
+### Pairwise plot
+The score values of the first three components are shown. These plots are used to see patterns, groups and/or outleirs in the data. Behind each component are relative amount of variance explained by each components, these are explict extracted by `explvar` function. explained variance: proportion mathemaical model acount sfor variation of the  dataset.
+```{r}
+plot(pls_model_LOO, plottype = "scores", comps = 1:3)
+explvar(pls_model_LOO)
 ```
 
-
-```{r predict on test set}
-
+### Predict on test set
+The pls fitted model is being used to predict the values of the test data
+```{r}
+predict(pls_model_LOO, ncomp = 3, newdata = test)
 ```
 
 
