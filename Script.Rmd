@@ -10,36 +10,44 @@ output: html_document
 ### Clear working space
 First step is to make sure that the working space is empty.
 ```{r}
-rm(list=ls()) # clear all variables
+# clear all variables
+rm(list=ls()) 
 ```
 
 ### Set path working directory
 The directory path is set to the stored datasets.
 ```{r}
-setwd("C:/Users/stijn/Desktop/Master systems biology/Systems biology year 2/scientific computing/statistic") # set working directory
+# set working directory
+setwd("C:/Users/stijn/Desktop/Master systems biology/Systems biology year 2/scientific computing/statistic") 
 ```
 
 ### Load libraries
-Loading the required packages for specific functions.
+Loading the required packages for specific functions. 
 ```{r}
-library(pls) # load library
+# pls: used for the multivariate regression methods partial least squares regression
+library(pls) 
+# caTools: the package inclused basic static functions. for random sampeling
 library(caTools)
 ```
 
 ### Import assay data
 The first dataset that is imported is the assay data from PubMech (AID_624202). The first 6 lines will be skipped for the reason that they don't contain relevant information. Only the SID and Score collumns will be selected from this dataset.
 ```{r}
+# Read CSV file, skip first 6 lines
 assayData = read.csv(
   file='AID_624202_datatable.csv',
   header=FALSE, skip=6
-) # Read CSV file, skip first 6 lines
-dim(assayData) # check the rows and collumns
-head(assayData,n=5) # inspect the first 5 lines
-assayData = assayData[,c("V2","V5")] # keep the SID and Score column
-colnames(assayData) = c("SID","Score") # change the column names
+) 
+# check the rows and collumns
+dim(assayData) 
+# inspect the first 5 lines
+head(assayData,n=5) 
+# keep the SID and Score column
+assayData = assayData[,c("V2","V5")] 
+# change the column names
+colnames(assayData) = c("SID","Score") 
 dim(assayData)
 head(assayData,n=5)
-
 ```
 
 ### Import descriptors file
@@ -50,10 +58,11 @@ The `descriptors.Rmd` uses the downloaded assay data from PubMech (AID_624202).
 discriptorData = read.csv(
   file='descriptors.csv',
   header=TRUE,row.names = 2
-) # read the CSV
+)
 dim(discriptorData)
 head(discriptorData,n=5)
-discriptorData = discriptorData[,-1] # Delete "X" column, which only contains numbers
+# Delete "X" column, which only contains numbers
+discriptorData = discriptorData[,-1] 
 dim(discriptorData)
 head(discriptorData,n=5)
 ```
@@ -61,19 +70,22 @@ head(discriptorData,n=5)
 ### Match SID
 The SID column from both data sets will be match, in order to add the score column to the discriptorData. In the variable data is the complete dataset stored
 ```{r}
-data = assayData[match(rownames(discriptorData),assayData$SID),] # Match by SID
-data = cbind(discriptorData,data$Score) # add the score column to the discriptordata
+# Match by SID
+data = assayData[match(rownames(discriptorData),assayData$SID),] 
+# add the score column to the discriptordata
+data = cbind(discriptorData,data$Score) 
 dim(data)
 head(data,n=5)
 ```
 ### Data cleaning (remove NA and 0 collumns)
 During data inspection, it came to the attation that there are columns with only NA values and columns with no variance. These column wont have any added value to the prediction model and thus will be removed.
 ```{r}
-data = data[, colSums(is.na(data)) != nrow(data)] # check for columns with NA and remove them
+# check for columns with NA and remove them
+data = data[, colSums(is.na(data)) != nrow(data)]
 dim(data)
 head(data,n=5)
-
-data = Filter(var,data) # filter out the columns with no variance
+# filter out the columns with no variance
+data = Filter(var,data) 
 dim(data)
 head(data,n=5)
 ```
@@ -81,20 +93,28 @@ head(data,n=5)
 ### Split into train and test data
 The `caTools` library is used to randomly generate train and test data. 80 percent of the data will be used as training data while the other 20 precent will be used as test data.
 ```{r}
-set.seed(101) # set the seed for the reason that always the same sequence will be generated
-sample = sample.split(data, SplitRatio = .80) # random sample of 80 percent
-train = subset(data, sample == TRUE) # subset the 80 percent data
-train_y = train$`data$Score` # store the score in a variable
-test  = subset(data, sample == FALSE) # subset the 20 percent data
+# set the seed for the reason that always the same sequence will be generated
+set.seed(101) 
+# random sample of 80 percent
+sample = sample.split(data, SplitRatio = .80) 
+# subset the 80 percent data
+train = subset(data, sample == TRUE) 
+# store the score in a variable
+train_y = train$`data$Score` 
+# subset the 20 percent data
+test  = subset(data, sample == FALSE) 
 test_y = test$`data$Score`
 ```
 
 ### Partial Least Squares (pls) model 
 The `pls` library is used for the development of the prediction model. pls is being used for the reason that there are relativily many predictor variables and relativly a few samples.
 ```{r}
-pls_model <- plsr(`data$Score` ~ .,ncomp = 10, data = train) # fitting the PLS model. score agianst all other variables. the model is fit with 10 components
-summary(pls_model) # overview of the fit and validation results
-pls_model_LOO <- plsr(`data$Score` ~ .,ncomp = 10, data = train,validation = "LOO") # added cross validation (Leave-One-Out)
+# fitting the PLS model. score agianst all other variables. the model is fit with 10 components
+pls_model <- plsr(`data$Score` ~ .,ncomp = 10, data = train) 
+# overview of the fit and validation results
+summary(pls_model) 
+# added cross validation (Leave-One-Out)
+pls_model_LOO <- plsr(`data$Score` ~ .,ncomp = 10, data = train,validation = "LOO") 
 summary(pls_model_LOO)
 ```
 
@@ -102,24 +122,27 @@ summary(pls_model_LOO)
 RMSE measures how spread out the residuals are. The summary above showed two cross validation estimates, the ordinary CV and the adjCV which is a bias-correctd CV estimate. three components seem to be enough 
 
 ```{r}
-plot(RMSEP(pls_model_LOO), legendpos="topright") # plots the estimated RMSEP as a function of the number of components. legendpos indicated the legend position
+# plots the estimated RMSEP as a function of the number of components. legendpos indicated the legend position
+plot(RMSEP(pls_model_LOO), legendpos="topright") 
 ```
 
-### plot 3 components
-
+### plot the third component
+The plot shows the cross validated prediction by use of the third components.  
 ```{r}
+# use the plot function for prediction, number of component was selected from the above figure, aspect ratio on 1 to produce a plot where distance between oints are accurate, line arguement for regression line
 plot(pls_model_LOO, ncomp = 3, asp = 1, line = TRUE)
 ```
 
 ### Pairwise plot
-The score values of the first three components are shown. These plots are used to see patterns, groups and/or outleirs in the data. Behind each component are relative amount of variance explained by each components, these are explict extracted by `explvar` function. explained variance: proportion mathemaical model acount sfor variation of the  dataset.
+The score values of the first three components are shown. These plots are used to see patterns, groups and/or outleirs in the data. Behind each component are relative amount of variance explained by each components, these are explict extracted by `explvar` function. explained variance: proportion mathemaical model acount for variation of the  dataset.
 ```{r}
 plot(pls_model_LOO, plottype = "scores", comps = 1:3)
+# extract amount of variance explianed for each component in the model
 explvar(pls_model_LOO)
 ```
 
 ### Predict on test set
-The pls fitted model is being used to predict the values of the test data
+The pls fitted model is being used to predict the values of the test data.
 ```{r}
 predict(pls_model_LOO, ncomp = 3, newdata = test)
 ```
