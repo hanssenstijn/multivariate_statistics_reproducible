@@ -49,7 +49,7 @@ head(assayData,n=5)
 ```
 
 ### Import descriptors file
-In this section will the descriptors file be imported
+In this section will the descriptors file be imported.
 For the development of the discriptor file go to: [descriptors.Rmd](https://github.com/egonw/scientificProgramming/blob/master/assignment%202/descriptors.Rmd).
 The `descriptors.Rmd` uses the downloaded assay data from PubMech [AID624202](https://pubchem.ncbi.nlm.nih.gov/bioassay/624202).
 ```{r}
@@ -66,7 +66,7 @@ head(discriptorData,n=5)
 ```
 
 ### Match SID
-The SID column from both data sets will be matched, in order to add the score column to the discriptorData. In the variable `data` is the new dataset stored.
+The SID column from both datasets will be matched, in order to add the score column to the discriptorData. In the variable `data` is the new dataset stored.
 ```{r}
 # match by SID column
 data = assayData[match(rownames(discriptorData),assayData$SID),] 
@@ -117,7 +117,7 @@ summary(pls_model_CV)
 ```
 
 ### Root Mean Squared Error of Prediction (RMSEP) plot
-RMSE measures how spread out the residuals are. The summary above showed two cross validation estimates, the ordinary CV and the adjCV which is a bias-correctd CV estimate. After inspecting this plot it becomes clear that the third component is the best to choose for future functions.
+RMSE measures how spread out the residuals are. The summary above showed two cross validation estimates, the ordinary CV and the adjCV which is a bias-correctd CV estimate. After inspecting this plot it becomes clear that the third component (where the "elbow"" is) is the best to choose for future functions.
 
 ```{r}
 # plots the estimated RMSEP as a function of the number of components. legendpos indicated the legend position
@@ -127,12 +127,12 @@ plot(RMSEP(pls_model_CV), legendpos="topright")
 ### Plot the prediction by using the third component on the training set
 The plot shows the cross validated prediction by use of the third component.  
 ```{r}
-# use the plot function for prediction, number of component was selected from the above figure, aspect ratio on 1 to produce a plot where distance between points are accurate, line arguement for regression line
+# use the plot function for prediction versus measured, number of component was selected from the above figure, aspect ratio on 1 to produce a plot where distance between points are accurate, line arguement for regression line
 plot(pls_model_CV, ncomp = 3, asp = 1, line = TRUE)
 ```
 
 ### Pairwise plot
-The score values of the first three components are shown. These plots are used to see patterns, groups and/or outliers in the data. Behind each component are relative amount of variance explained by each component, these are explict extracted by `explvar` function. Explained variance: proportion mathemaical model acount for variation of the  dataset.
+The score values of the first three components are shown. These plots are used to see patterns, groups and/or outliers in the data. Behind each component are relative amount of variance explained by each component, these are explict extracted by `explvar` function. Explained variance: proportion mathemaical model acount for variation of the dataset.
 ```{r}
 plot(pls_model_CV, plottype = "scores", comps = 1:3)
 # extract amount of variance explianed for each component in the model
@@ -157,7 +157,7 @@ RMSEP(pls_model_CV, newdata = test)
 ```
 
 ### Test set plot
-The plot shows the measured value's versus the predicted values  of the test set. The prediction model is not capable to predict the true measrued values.
+The plot shows the measured value's versus the predicted values of the test set. The prediction model is not capable to predict the true measrued values.
 ```{r}
 # predplot is used because it plots the prior predictive distribution of the number of successes in the trail
 predplot(pls_model_CV, ncomp = 3, newdata = test, asp = 1, line = TRUE)
