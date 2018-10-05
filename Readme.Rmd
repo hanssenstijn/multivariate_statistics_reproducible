@@ -1,12 +1,12 @@
 ## Making multivariate statistics reproducible
 
-`Script.rmd` represents the R notebook. The notebook describes the use of partial least squares (pls) on a BRCA1 expression dataset in order to predict the activity of BRCA1 expression.
+`Script.rmd` represents the R notebook. The notebook describes the use of partial least squares (pls) on a BRCA1 expression dataset in order to predict the activity on BRCA1 expression.
 
-One of the two datasets that has been used is a AHTS assay to identify small molecule activators of BRCA1 expression. It can be downloaded from PubChem Assay: [AID624202](https://pubchem.ncbi.nlm.nih.gov/bioassay/624202). The second dataset, which will be the descriptors dataset, can be generated from the AID 624202 dataset using [descriptors.Rmd](https://github.com/egonw/scientificProgramming/blob/master/assignment%202/descriptors.Rmd). 
+One of the two datasets that has been used is a AHTS assay to identify small molecule activators of BRCA1 expression. It can be downloaded from PubChem Assay: [AID624202](https://pubchem.ncbi.nlm.nih.gov/bioassay/624202), Download > Data Table only. The second dataset, which will be the descriptors dataset, can be generated from the AID 624202 dataset using [descriptors.Rmd](https://github.com/egonw/scientificProgramming/blob/master/assignment%202/descriptors.Rmd). 
 
 After downloading `AID624202.csv` and creating `descriptors.csv`, will the datasets be combined into one dataset. Data cleaning was the next step. Columns with only "Na" values and columns with zero variance where filtered out for the reason that these would not add value to the prediction model. Hereafter will the data be randomly split into training and test data (80/20). The pls model will be generated using the training test set and used to predict the activity score of new data (test set). For the generation of the model a cross validation of 10 segments division was applied. Lastly, multiple plots will be produced, showing the root mean squared error of prediction, cross-validated prediction on the training set and the measured values versus the predicted values of the test set.
 
-
+The licenses for the R packages can be found here: [pls](https://cran.r-project.org/web/licenses/GPL-2) and [caTools](https://cran.r-project.org/web/licenses/GPL-3)
 
 
 
