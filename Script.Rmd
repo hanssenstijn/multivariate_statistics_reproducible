@@ -1,5 +1,3 @@
-# Systems Biology Scientific Programming
-
 ---
 title: "Assignment 2: Multivariate statistics reproducible"
 author: "Stijn Hanssen"
